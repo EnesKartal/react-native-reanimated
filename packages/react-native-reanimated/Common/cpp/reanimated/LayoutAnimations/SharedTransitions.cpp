@@ -881,6 +881,10 @@ void LayoutAnimationsProxy::finishSharedTransition(
     SharedElement &element,
     TransactionMeta &transaction) const {
   transaction.restoreRequests.push_back({sharedTag, element.run->target});
+  // Nothing shows the element once its target is deleted.
+  if (!isLightNodeMapped(element.run->target)) {
+    transaction.restoreRequests.push_back({sharedTag, element.run->source});
+  }
   transaction.containersToRemove.push_back(element.run->container);
   element.run.reset();
 }
